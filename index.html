@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit and View Quotes</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .note {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #e7f0ff;
+      border-left: 5px solid #007bff;
+      border-radius: 4px;
+      color: #333;
+    }
+
+    .quote {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Submit and View Quotes</h1>
+    <div class="note">
+      Your message will be printed on my printer!
+    </div>
+    <form id="quoteForm">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" maxlength="20" required>
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" maxlength="200" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+    <hr>
+    <h2>Quotes</h2>
+    <div id="quotesContainer"></div>
+  </div>
+
+  <script>
+    document.getElementById('quoteForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const message = document.getElementById('message').value;
+
+      const response = await fetch('api.goes.here.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, message })
+      });
+
+      if (response.ok) {
+        alert('Message submitted successfully!');
+        fetchQuotes();
+      } else {
+        alert('Failed to submit message');
+      }
+    });
+
+    async function fetchQuotes() {
+      const response = await fetch('api.goes.here.com');
+      const quotes = await response.json();
+
+      const quotesContainer = document.getElementById('quotesContainer');
+      quotesContainer.innerHTML = '';
+
+      quotes.forEach(quote => {
+        const quoteElement = document.createElement('div');
+        quoteElement.className = 'quote';
+        quoteElement.innerHTML = `<strong>${quote.username}:</strong> ${quote.message}`;
+        quotesContainer.appendChild(quoteElement);
+      });
+    }
+
+    // Fetch quotes when the page loads
+    fetchQuotes();
+  </script>
+</body>
+</html>
